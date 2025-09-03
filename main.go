@@ -9,12 +9,6 @@ import (
 	"strconv"
 )
 
-type Question struct{
-	Text string
-	Options []string
-	Answer int
-}
-
 type GameState struct{
 	Name string
 	Points int
@@ -23,18 +17,38 @@ type GameState struct{
 	Questions []Question
 }
 
-func(g *GameState) Init(){
-	fmt.Printf("\nSeja bem vindo(a) ao %s!\n", g.Type)
-	fmt.Println("Escreva o seu nome:")
-	reader := bufio.NewReader(os.Stdin)
+type Question struct{
+	Text string
+	Options []string
+	Answer int
+}
 
-	name, err := reader.ReadString('\n')
+func (g *GameState) Choose(){
+	var num int
+	for{
+		fmt.Println("Tipos de Quiz:\n 1 - Quiz de Conhecimentos Gerais\n 2 - Quiz de História\n 3 - Quiz de Inglês")
+		fmt.Println("\nEscolha um Tipo de Quiz:")
+		reader := bufio.NewReader(os.Stdin)
+		read,_ := reader.ReadString('\n')
+		num,_ = toInt(read[:len(read)-2])
+		
+		switch num{
+		case 1:
+			g.Quiz = "quiz-conhecimentos-gerais.csv"
+			g.Type = "Quiz de Conhecimentos Gerais"
+		case 2:
+			g.Quiz = "quiz-historia.csv"
+			g.Type = "Quiz de História do Brasil"
 
-	if err != nil{
-		panic("Erro ao ler a string.")
+		case 3:
+			g.Quiz = "quiz-ingles.csv"
+			g.Type = "Quiz de Inglês"
+		default:
+			fmt.Println("Por favor digite um número, de 1 à 3")
+		continue
+		}
+		break
 	}
-	g.Name = name
-	fmt.Printf("Vamos jogar %s\n", g.Name)
 }
 
 func (g *GameState) ProcessCSV(s string){
@@ -64,6 +78,20 @@ func (g *GameState) ProcessCSV(s string){
 			g.Questions = append(g.Questions, question)
 		}
 	}
+}
+
+func(g *GameState) Init(){
+	fmt.Printf("\nSeja bem vindo(a) ao %s!\n", g.Type)
+	fmt.Println("Escreva o seu nome:")
+	reader := bufio.NewReader(os.Stdin)
+
+	name, err := reader.ReadString('\n')
+
+	if err != nil{
+		panic("Erro ao ler a string.")
+	}
+	g.Name = name
+	fmt.Printf("Vamos jogar %s\n", g.Name)
 }
 
 func (g *GameState) Run(){
@@ -100,41 +128,6 @@ func (g *GameState) Run(){
 		}
 	}
 }
-func (g *GameState) Choose(){
-	var num int
-	for{
-		fmt.Println("Tipos de Quiz:\n 1 - Quiz de Conhecimentos Gerais\n 2 - Quiz de História\n 3 - Quiz de Inglês")
-		fmt.Println("\nEscolha um Tipo de Quiz:")
-		reader := bufio.NewReader(os.Stdin)
-		read,_ := reader.ReadString('\n')
-		num,_ = toInt(read[:len(read)-2])
-		
-		switch num{
-		case 1:
-			g.Quiz = "quiz-conhecimentos-gerais.csv"
-			g.Type = "Quiz de Conhecimentos Gerais"
-		case 2:
-			g.Quiz = "quiz-historia.csv"
-			g.Type = "Quiz de História do Brasil"
-
-		case 3:
-			g.Quiz = "quiz-ingles.csv"
-			g.Type = "Quiz de Inglês"
-		default:
-			fmt.Println("Por favor digite um número, de 1 à 3")
-		continue
-		}
-		break
-	}
-}
-
-func toInt(s string) (int, error){
-	i, err := strconv.Atoi(s)
-	if err != nil{
-		return 0, errors.New("por favor digite um número para responder o quiz")
-	}
-	return i, nil
-}
 
 func (g *GameState) Grade(n int){
 	if n > 80 {
@@ -148,6 +141,14 @@ func (g *GameState) Grade(n int){
 	} else {
 		fmt.Printf("Nota D")
 	}
+}
+
+func toInt(s string) (int, error){
+	i, err := strconv.Atoi(s)
+	if err != nil{
+		return 0, errors.New("por favor digite um número para responder o quiz")
+	}
+	return i, nil
 }
 
 func main() {
