@@ -16,6 +16,7 @@ type Question struct{
 }
 
 type GameState struct{
+	Type string
 	Name string
 	Points int
 	Questions []Question
@@ -35,8 +36,8 @@ func(g *GameState) Init(){
 	fmt.Printf("Vamos jogar %s\n", g.Name)
 }
 
-func (g *GameState) ProcessCSV(){
-	f, err := os.Open("quiz.csv")
+func (g *GameState) ProcessCSV(s string){
+	f, err := os.Open(s)
 
 	if err != nil{
 		panic("Erro ao ler o arquivo csv.")
@@ -74,7 +75,6 @@ func (g *GameState) Run(){
 
 		fmt.Println("Digite uma alternativa:")
 
-
 		var answer int
 		var err error
 		for{
@@ -82,22 +82,44 @@ func (g *GameState) Run(){
 			read, _ := reader.ReadString('\n')
 			answer, err = toInt(read[:len(read)-2])
 
-			if err != nil{
+			if err != nil {
 				fmt.Println(err.Error())
 				continue
 			}
 			break			
 		}
 
-		// Validar a resposta
 		if answer == question.Answer{
-			fmt.Println("Parabens, você acertou a resposta!")
+			fmt.Println("Parabéns, você acertou a resposta!")
 			g.Points += 10
-			fmt.Println("__________________________________")
+			fmt.Println("----------------------------------")
 		} else {
-			fmt.Println("Você errou ...")
-			fmt.Println("______________")
+			fmt.Println("Ops, você errou...")
+			fmt.Println("--------------")
 		}
+	}
+}
+func (g *GameState) Choose(){
+	var num int
+	for{
+		fmt.Println("Tipos de Quiz:\n 1 - Quiz de Conhecimentos Gerais\n 2 - Quiz de História\n 3 - Quiz de Inglês")
+		fmt.Println("Escolha um Tipo de Quiz:")
+		reader := bufio.NewReader(os.Stdin)
+		read,_ := reader.ReadString('\n')
+		num,_ = toInt(read[:len(read)-2])
+		
+		switch num{
+		case 1:
+			g.Type = "quiz-conhecimentos-gerais.csv"
+		case 2:
+			g.Type = "quiz-historia.csv"
+		case 3:
+			g.Type = "quiz-ingles.csv"
+		default:
+			fmt.Println("Por favor digite um número, de 1 à 3")
+		continue
+		}
+		break
 	}
 }
 
@@ -111,10 +133,9 @@ func toInt(s string) (int, error){
 
 func main() {
 	game := &GameState{Points: 0}
-
-	go game.ProcessCSV()
+	game.Choose()
+	go game.ProcessCSV(game.Type)
 	game.Init()
 	game.Run()
 	fmt.Printf("\nFim de Jogo. Você fez %d pontos.", game.Points)
-
 }
