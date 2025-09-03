@@ -16,14 +16,15 @@ type Question struct{
 }
 
 type GameState struct{
-	Type string
 	Name string
 	Points int
+	Quiz string
+	Type string
 	Questions []Question
 }
 
 func(g *GameState) Init(){
-	fmt.Println("Seja bem vindo(a) ao quiz")
+	fmt.Printf("\nSeja bem vindo(a) ao %s!\n", g.Type)
 	fmt.Println("Escreva o seu nome:")
 	reader := bufio.NewReader(os.Stdin)
 
@@ -103,18 +104,22 @@ func (g *GameState) Choose(){
 	var num int
 	for{
 		fmt.Println("Tipos de Quiz:\n 1 - Quiz de Conhecimentos Gerais\n 2 - Quiz de História\n 3 - Quiz de Inglês")
-		fmt.Println("Escolha um Tipo de Quiz:")
+		fmt.Println("\nEscolha um Tipo de Quiz:")
 		reader := bufio.NewReader(os.Stdin)
 		read,_ := reader.ReadString('\n')
 		num,_ = toInt(read[:len(read)-2])
 		
 		switch num{
 		case 1:
-			g.Type = "quiz-conhecimentos-gerais.csv"
+			g.Quiz = "quiz-conhecimentos-gerais.csv"
+			g.Type = "Quiz de Conhecimentos Gerais"
 		case 2:
-			g.Type = "quiz-historia.csv"
+			g.Quiz = "quiz-historia.csv"
+			g.Type = "Quiz de História do Brasil"
+
 		case 3:
-			g.Type = "quiz-ingles.csv"
+			g.Quiz = "quiz-ingles.csv"
+			g.Type = "Quiz de Inglês"
 		default:
 			fmt.Println("Por favor digite um número, de 1 à 3")
 		continue
@@ -134,7 +139,7 @@ func toInt(s string) (int, error){
 func main() {
 	game := &GameState{Points: 0}
 	game.Choose()
-	go game.ProcessCSV(game.Type)
+	go game.ProcessCSV(game.Quiz)
 	game.Init()
 	game.Run()
 	fmt.Printf("\nFim de Jogo. Você fez %d pontos.", game.Points)
