@@ -136,11 +136,26 @@ func toInt(s string) (int, error){
 	return i, nil
 }
 
+func (g *GameState) Grade(n int){
+	if n > 80 {
+		fmt.Printf("Nota S")
+	} else if n > 60 {
+		fmt.Printf("Nota A")
+	} else if n > 40 {
+		fmt.Printf("Nota B")
+	} else if n > 20 {
+		fmt.Printf("Nota C")
+	} else {
+		fmt.Printf("Nota D")
+	}
+}
+
 func main() {
 	game := &GameState{Points: 0}
 	game.Choose()
 	go game.ProcessCSV(game.Quiz)
 	game.Init()
 	game.Run()
-	fmt.Printf("\nFim de Jogo. Você fez %d pontos.", game.Points)
+	fmt.Printf("\nFim de Jogo!\nVocê fez %d pontos: ", game.Points)
+	game.Grade(game.Points)
 }
