@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 )
 
 type GameState struct{
@@ -38,14 +39,14 @@ func (g *GameState) Choose(){
 			g.Type = "Quiz de Conhecimentos Gerais"
 		case 2:
 			g.Quiz = "quiz-historia.csv"
-			g.Type = "Quiz de História do Brasil"
+			g.Type = "Quiz de História"
 
 		case 3:
 			g.Quiz = "quiz-ingles.csv"
 			g.Type = "Quiz de Inglês"
 		default:
-			fmt.Println("Por favor digite um número, de 1 à 3")
-		continue
+			fmt.Println("Por favor digite um número, de 1 a 3")
+			continue
 		}
 		break
 	}
@@ -81,7 +82,7 @@ func (g *GameState) ProcessCSV(s string){
 }
 
 func(g *GameState) Init(){
-	fmt.Printf("\nSeja bem vindo(a) ao %s!\n", g.Type)
+	fmt.Printf("\nSeja bem vindo(a) ao %s!\nVocê terá um minuto para responder todo o Quiz.\n", g.Type)
 	fmt.Println("Escreva o seu nome:")
 	reader := bufio.NewReader(os.Stdin)
 
@@ -91,40 +92,47 @@ func(g *GameState) Init(){
 		panic("Erro ao ler a string.")
 	}
 	g.Name = name
-	fmt.Printf("Vamos jogar %s\n", g.Name)
+	fmt.Printf("Boa Sorte %s\n", g.Name)
 }
 
 func (g *GameState) Run(){
+	timer := time.NewTimer(60 * time.Second)
 	for index, question := range g.Questions{
-		fmt.Printf("\033[33m%d. %s\033[0m\n", index+1, question.Text)
-				
-		for j, option := range question.Options{
-			fmt.Printf(" [%d] %s\n", j+1, option)
-		}
+		select{
+			case <- timer.C:
+				fmt.Println("\nTempo Esgotado!")
+				return
+			default:
+				fmt.Printf("\033[33m%d. %s\033[0m\n", index+1, question.Text)
+						
+				for j, option := range question.Options{
+					fmt.Printf(" [%d] %s\n", j+1, option)
+				}
 
-		fmt.Println("Digite uma alternativa:")
+				fmt.Println("Digite uma alternativa:")
 
-		var answer int
-		var err error
-		for{
-			reader := bufio.NewReader(os.Stdin)
-			read, _ := reader.ReadString('\n')
-			answer, err = toInt(read[:len(read)-2])
+				var answer int
+				var err error
+				for{
+					reader := bufio.NewReader(os.Stdin)
+					read, _ := reader.ReadString('\n')
+					answer, err = toInt(read[:len(read)-2])
 
-			if err != nil {
-				fmt.Println(err.Error())
-				continue
-			}
-			break			
-		}
+					if err != nil {
+						fmt.Println(err.Error())
+						continue
+					}
+					break			
+				}
 
-		if answer == question.Answer{
-			fmt.Println("Parabéns, você acertou a resposta!")
-			g.Points += 10
-			fmt.Println("----------------------------------")
-		} else {
-			fmt.Println("Ops, você errou...")
-			fmt.Println("--------------")
+				if answer == question.Answer{
+					fmt.Println("Parabéns, você acertou a resposta!")
+					g.Points += 10
+					fmt.Println("----------------------------------")
+				} else {
+					fmt.Println("Ops, você errou...")
+					fmt.Println("--------------")
+				}
 		}
 	}
 }
@@ -154,9 +162,10 @@ func toInt(s string) (int, error){
 func main() {
 	game := &GameState{Points: 0}
 	game.Choose()
-	go game.ProcessCSV(game.Quiz)
+	game.ProcessCSV(game.Quiz)
 	game.Init()
 	game.Run()
-	fmt.Printf("\nFim de Jogo!\nVocê fez %d pontos: ", game.Points)
+	fmt.Printf("\nVocê fez %d pontos: ", game.Points)
 	game.Grade(game.Points)
+	fmt.Println()
 }
