@@ -65,6 +65,6 @@ Ele solicita novamente uma resposta válida:
 ## 📌 Autor
 
 👤 Marcos Vinícius Ribeiro
-- 📧 [LinkedIn] (https://www.linkedin.com/in/marcos-vinícius-ribeiro-gonçalves-46a0b0351)
+- 📧 [LinkedIn](https://www.linkedin.com/in/marcos-vinícius-ribeiro-gonçalves-46a0b0351)
 
-- 📂 [GitHub] (https://github.com/Marcosviniciusribeiiro)
+- 📂 [GitHub](https://github.com/Marcosviniciusribeiiro)
