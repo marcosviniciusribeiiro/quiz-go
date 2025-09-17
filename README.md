@@ -79,5 +79,3 @@ Esse projeto foi essencial para consolidar conceitos fundamentais de Go, desde a
 
 👤 Marcos Vinícius Ribeiro
 - 📧 [LinkedIn](https://www.linkedin.com/in/marcos-vinícius-ribeiro-gonçalves-46a0b0351)
-
-- 📂 [GitHub](https://github.com/Marcosviniciusribeiiro)
