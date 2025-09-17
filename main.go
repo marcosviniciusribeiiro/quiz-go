@@ -27,7 +27,7 @@ type Question struct{
 func (g *GameState) Choose(){
 	var num int
 	for{
-		fmt.Println("Tipos de Quiz:\n 1 - Quiz de Conhecimentos Gerais\n 2 - Quiz de História\n 3 - Quiz de Inglês")
+		fmt.Println("\nTipos de Quiz:\n 1 - Quiz de Conhecimentos Gerais\n 2 - Quiz de História\n 3 - Quiz de Inglês")
 		fmt.Println("\nEscolha um Tipo de Quiz:")
 		reader := bufio.NewReader(os.Stdin)
 		read,_ := reader.ReadString('\n')
@@ -82,8 +82,8 @@ func (g *GameState) ProcessCSV(s string){
 }
 
 func(g *GameState) Init(){
-	fmt.Printf("\nSeja bem vindo(a) ao %s!\nVocê terá um minuto para responder todo o Quiz.\n", g.Type)
-	fmt.Println("Escreva o seu nome:")
+	fmt.Printf("\nSeja bem vindo(a) ao %s!\n\n- Você terá um minuto para responder todo o Quiz.\n", g.Type)
+	fmt.Println("\nEscreva o seu nome:")
 	reader := bufio.NewReader(os.Stdin)
 
 	name, err := reader.ReadString('\n')
@@ -92,7 +92,7 @@ func(g *GameState) Init(){
 		panic("Erro ao ler a string.")
 	}
 	g.Name = name
-	fmt.Printf("Boa Sorte %s\n", g.Name)
+	fmt.Printf("\nBoa Sorte %s\n", g.Name)
 }
 
 func (g *GameState) Run(){
