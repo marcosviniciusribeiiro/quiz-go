@@ -43,7 +43,7 @@ Outro ponto importante foi a **utilização de channels** para implementar o tim
 
 ### Exemplo de perguntas
 
-![Perguntas](imagens/pergunta2.png)
+![Perguntas](imagens/pergunta.png)
 
 ### Resultado final
 
